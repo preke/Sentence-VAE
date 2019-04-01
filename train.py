@@ -91,11 +91,11 @@ def main(args):
         for split in splits:
 
             data_loader = DataLoader(
-                dataset=datasets[split],
-                batch_size=args.batch_size,
-                shuffle=split=='train',
-                num_workers=cpu_count(),
-                pin_memory=torch.cuda.is_available()
+                dataset     =datasets[split],
+                batch_size  =args.batch_size,
+                shuffle     =split=='train',
+                num_workers =cpu_count(),
+                pin_memory  =torch.cuda.is_available()
             )
 
             tracker = defaultdict(tensor)
@@ -132,6 +132,7 @@ def main(args):
 
 
                 # bookkeepeing
+                print(tracker['ELBO'])
                 tracker['ELBO'] = torch.cat((tracker['ELBO'], loss.data))
 
                 if args.tensorboard_logging:
