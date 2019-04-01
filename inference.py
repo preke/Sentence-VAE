@@ -80,7 +80,9 @@ def main(args):
     
     model.eval()
 
-    valid_data = json.load('/home/wenzhy/Sentence-VAE/dumps/2019-Apr-01-08:37:49/valid_E9.json')
+    with open('/home/wenzhy/Sentence-VAE/dumps/2019-Apr-01-08:37:49/valid_E9.json', 'r') as myfile:
+        data=myfile.read()
+    valid_data = json.loads(data)
     sentences = valid_data['target_sents'][:10]
     zs = valid_data['z'][:10]
     print(sentences)
