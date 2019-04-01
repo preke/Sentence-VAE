@@ -68,7 +68,8 @@ def main(args):
     samples, z = model.inference(n=args.num_samples)
     print('----------SAMPLES----------')
     print(*idx2word(samples, i2w=i2w, pad_idx=w2i['<pad>']), sep='\n')
-    decoder(model, z)
+    print(z.shape)
+    # decoder(model, z)
 
 
     
