@@ -119,7 +119,7 @@ class SentenceVAE(nn.Module):
         mean, logv, z = self.encoder(input_sequence, sorted_lengths, batch_size)
 
         # DECODER
-        logv = self.decoder(z, batch_size, sorted_idx, input_sequence, sorted_lengths)
+        logp = self.decoder(z, batch_size, sorted_idx, input_sequence, sorted_lengths)
 
         return logp, mean, logv, z
 

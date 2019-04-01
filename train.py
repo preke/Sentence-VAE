@@ -153,7 +153,7 @@ def main(args):
                         tracker['target_sents'] = list()
                     tracker['target_sents'] += idx2word(batch['target'].data, i2w=datasets['train'].get_i2w(), pad_idx=datasets['train'].pad_idx)
                     tracker['z'] = torch.cat((tracker['z'], z.data), dim=0)
-                    logv = torch.argmax(logv, dim=2)
+                    logp = torch.argmax(logp, dim=2)
                     if 'gen_sents' not in tracker:
                         tracker['gen_sents'] = list()
                     tracker['gen_sents'] += idx2word(logv.data, i2w=datasets['train'].get_i2w(), pad_idx=datasets['train'].pad_idx)
