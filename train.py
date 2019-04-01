@@ -165,7 +165,7 @@ def main(args):
 
             # save a dump of all sentences and the encoded latent space
             if split == 'valid':
-                dump = {'target_sents':tracker['target_sents'], 'gen_sents':tracker['gen_sents'].tolist()}
+                dump = {'target_sents':tracker['target_sents'], 'gen_sents':tracker['gen_sents']}
                 if not os.path.exists(os.path.join('dumps', ts)):
                     os.makedirs('dumps/'+ts)
                 with open(os.path.join('dumps/'+ts+'/valid_E%i.json'%epoch), 'w') as dump_file:
