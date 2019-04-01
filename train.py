@@ -70,7 +70,7 @@ def main(args):
     def loss_fn(logp, target, length, mean, logv, anneal_function, step, k, x0):
 
         # cut-off unnecessary padding from target, and flatten
-        print(torch.max(length).data[0])
+        # print(torch.max(length).data[0])
         target = target[:, :torch.max(length).data[0]].contiguous().view(-1)
         logp = logp.view(-1, logp.size(2))
         
