@@ -49,7 +49,7 @@ def main(args):
     if torch.cuda.is_available():
         model = model.cuda()
 
-    print(model)
+    # print(model)
 
     if args.tensorboard_logging:
         writer = SummaryWriter(os.path.join(args.logdir, expierment_name(args,ts)))
@@ -70,6 +70,7 @@ def main(args):
     def loss_fn(logp, target, length, mean, logv, anneal_function, step, k, x0):
 
         # cut-off unnecessary padding from target, and flatten
+        print(torch.max(length).data[0])
         target = target[:, :torch.max(length).data[0]].contiguous().view(-1)
         logp = logp.view(-1, logp.size(2))
         
@@ -132,6 +133,7 @@ def main(args):
 
 
                 # bookkeepeing
+                print('ELBO:\n')
                 print(tracker['ELBO'])
                 tracker['ELBO'] = torch.cat((tracker['ELBO'], loss.data))
 
