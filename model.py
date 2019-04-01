@@ -47,13 +47,9 @@ class SentenceVAE(nn.Module):
         self.latent2hidden = nn.Linear(latent_size, hidden_size * self.hidden_factor)
         self.outputs2vocab = nn.Linear(hidden_size * (2 if bidirectional else 1), vocab_size)
 
-    def forward(self, input_sequence, length):
+    
 
-        batch_size = input_sequence.size(0)
-        sorted_lengths, sorted_idx = torch.sort(length, descending=True)
-        input_sequence = input_sequence[sorted_idx]
-
-        # ENCODER
+    def encoder(self, input_sequence, sorted_lengths):
         input_embedding = self.embedding(input_sequence)
 
         packed_input = rnn_utils.pack_padded_sequence(input_embedding, sorted_lengths.data.tolist(), batch_first=True)
@@ -74,7 +70,9 @@ class SentenceVAE(nn.Module):
         z = to_var(torch.randn([batch_size, self.latent_size]))
         z = z * std + mean
 
-        # DECODER
+        return mean, logv, z
+
+    def decoder(self, z):
         hidden = self.latent2hidden(z)
 
         if self.bidirectional or self.num_layers > 1:
@@ -109,13 +107,25 @@ class SentenceVAE(nn.Module):
         # project outputs to vocab
         logp = nn.functional.log_softmax(self.outputs2vocab(padded_outputs.view(-1, padded_outputs.size(2))), dim=-1)
         logp = logp.view(b, s, self.embedding.num_embeddings)
+        return logp
 
+    def forward(self, input_sequence, length):
+
+        batch_size = input_sequence.size(0)
+        sorted_lengths, sorted_idx = torch.sort(length, descending=True)
+        input_sequence = input_sequence[sorted_idx]
+
+        # ENCODER
+        mean, logv, z = self.encoder(input_sequence, sorted_lengths)
+
+        # DECODER
+        logv = self.decoder(z)
 
         return logp, mean, logv, z
 
 
 
-
+    
     def inference(self, n=4, z=None):
 
         if z is None:

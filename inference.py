@@ -5,43 +5,8 @@ import argparse
 
 from model import SentenceVAE
 from utils import to_var, idx2word, interpolate
+from torch.utils.data import DataLoader
 
-
-def decoder(model, z):
-    hidden = model.latent2hidden(z)
-
-    if model.bidirectional or model.num_layers > 1:
-        # unflatten hidden state
-        hidden = hidden.view(model.hidden_factor, batch_size, model.hidden_size)
-    else:
-        hidden = hidden.unsqueeze(0)
-
-    # decoder input
-    if model.word_dropout_rate > 0:
-        # randomly replace decoder input with <unk>
-        prob = torch.rand(input_sequence.size())
-        if torch.cuda.is_available():
-            prob=prob.cuda()
-        prob[(input_sequence.data - model.sos_idx) * (input_sequence.data - model.pad_idx) == 0] = 1
-        decoder_input_sequence = input_sequence.clone()
-        decoder_input_sequence[prob < model.word_dropout_rate] = model.unk_idx
-        input_embedding = model.embedding(decoder_input_sequence)
-    input_embedding = model.embedding_dropout(input_embedding)
-    packed_input = rnn_utils.pack_padded_sequence(input_embedding, sorted_lengths.data.tolist(), batch_first=True)
-
-    # decoder forward pass
-    outputs, _ = model.decoder_rnn(packed_input, hidden)
-
-    # process outputs
-    padded_outputs = rnn_utils.pad_packed_sequence(outputs, batch_first=True)[0]
-    padded_outputs = padded_outputs.contiguous()
-    _,reversed_idx = torch.sort(sorted_idx)
-    padded_outputs = padded_outputs[reversed_idx]
-    b,s,_ = padded_outputs.size()
-
-    # project outputs to vocab
-    logp = nn.functional.log_softmax(model.outputs2vocab(padded_outputs.view(-1, padded_outputs.size(2))), dim=-1)
-    logp = logp.view(b, s, model.embedding.num_embeddings)
 
 
 
@@ -80,30 +45,19 @@ def main(args):
     
     model.eval()
 
-    with open('/home/wenzhy/Sentence-VAE/dumps/2019-Apr-01-08:37:49/valid_E9.json', 'r') as myfile:
-        data=myfile.read()
-    valid_data = json.loads(data)
-    sentences = valid_data['target_sents'][:10]
-    zs = valid_data['z'][:10]
-    print(sentences)
-    print(zs)
     
-    # samples, z = model.inference(n=args.num_samples)
-    # print('----------SAMPLES----------')
-    # print(*idx2word(samples, i2w=i2w, pad_idx=w2i['<pad>']), sep='\n')
-    # print(z.shape)
-    # decoder(model, z)
+    samples, z = model.inference(n=args.num_samples)
+    print('----------SAMPLES----------')
+    print(*idx2word(samples, i2w=i2w, pad_idx=w2i['<pad>']), sep='\n')
+    print(z.shape)
 
-
-    
-
-    # z1 = torch.randn([args.latent_size]).numpy()
-    # z2 = torch.randn([args.latent_size]).numpy()
-    # z = to_var(torch.from_numpy(interpolate(start=z1, end=z2, steps=8)).float())
-    # samples, _ = model.inference(z=z)
-    # print(samples.size())
-    # print('-------INTERPOLATION-------')
-    # print(*idx2word(samples, i2w=i2w, pad_idx=w2i['<pad>']), sep='\n')
+    z1 = torch.randn([args.latent_size]).numpy()
+    z2 = torch.randn([args.latent_size]).numpy()
+    z = to_var(torch.from_numpy(interpolate(start=z1, end=z2, steps=8)).float())
+    samples, _ = model.inference(z=z)
+    print(samples.size())
+    print('-------INTERPOLATION-------')
+    print(*idx2word(samples, i2w=i2w, pad_idx=w2i['<pad>']), sep='\n')
 
 if __name__ == '__main__':
 

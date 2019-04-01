@@ -117,6 +117,7 @@ class PTB(Dataset):
                 input.extend(['<pad>'] * (self.max_sequence_length-length))
                 target.extend(['<pad>'] * (self.max_sequence_length-length))
 
+                # if have w, then index w, else index_of_unk
                 input = [self.w2i.get(w, self.w2i['<unk>']) for w in input]
                 target = [self.w2i.get(w, self.w2i['<unk>']) for w in target]
 

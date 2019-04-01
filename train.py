@@ -150,6 +150,11 @@ def main(args):
                         tracker['target_sents'] = list()
                     tracker['target_sents'] += idx2word(batch['target'].data, i2w=datasets['train'].get_i2w(), pad_idx=datasets['train'].pad_idx)
                     tracker['z'] = torch.cat((tracker['z'], z.data), dim=0)
+                    logv = model.decoder(z)
+                    logv = torch.argmax(logv, dim=2)
+                    if 'gen_sents' not in tracker:
+                        tracker['gen_sents'] = list()
+                    tracker['gen_sents'] += idx2word(logv.data, i2w=datasets['train'].get_i2w(), pad_idx=datasets['train'].pad_idx)
 
             print("%s Epoch %02d/%i, Mean ELBO %9.4f"%(split.upper(), epoch, args.epochs, torch.mean(tracker['ELBO'])))
 
@@ -158,7 +163,7 @@ def main(args):
 
             # save a dump of all sentences and the encoded latent space
             if split == 'valid':
-                dump = {'target_sents':tracker['target_sents'], 'z':tracker['z'].tolist()}
+                dump = {'target_sents':tracker['target_sents'], 'gen_sents':tracker['gen_sents'].tolist()}
                 if not os.path.exists(os.path.join('dumps', ts)):
                     os.makedirs('dumps/'+ts)
                 with open(os.path.join('dumps/'+ts+'/valid_E%i.json'%epoch), 'w') as dump_file:
