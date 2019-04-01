@@ -72,7 +72,7 @@ class SentenceVAE(nn.Module):
 
         return mean, logv, z
 
-    def decoder(self, z, batch_size, sorted_idx):
+    def decoder(self, z, batch_size, sorted_idx, input_sequence):
         hidden = self.latent2hidden(z)
 
         if self.bidirectional or self.num_layers > 1:
@@ -119,7 +119,7 @@ class SentenceVAE(nn.Module):
         mean, logv, z = self.encoder(input_sequence, sorted_lengths, batch_size)
 
         # DECODER
-        logv = self.decoder(z, batch_size, sorted_idx)
+        logv = self.decoder(z, batch_size, sorted_idx, input_sequence)
 
         return logp, mean, logv, z
 
