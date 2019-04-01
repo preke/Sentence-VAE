@@ -116,16 +116,16 @@ class SentenceVAE(nn.Module):
         input_sequence = input_sequence[sorted_idx]
 
         # ENCODER
-        mean, logv, z = self.encoder(input_sequence, sorted_lengths)
+        mean, logv, z = self.encoder(input_sequence, sorted_lengths, batch_size)
 
         # DECODER
-        logv = self.decoder(z)
+        logv = self.decoder(z, batch_size, sorted_idx)
 
         return logp, mean, logv, z
 
 
 
-    
+
     def inference(self, n=4, z=None):
 
         if z is None:

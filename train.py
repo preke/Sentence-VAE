@@ -103,8 +103,11 @@ def main(args):
 
             # Enable/Disable Dropout
             if split == 'train':
+                model.word_dropout = 0
                 model.train()
+
             else:
+                model.word_dropout = 1.0
                 model.eval()
 
             for iteration, batch in enumerate(data_loader):
@@ -150,7 +153,6 @@ def main(args):
                         tracker['target_sents'] = list()
                     tracker['target_sents'] += idx2word(batch['target'].data, i2w=datasets['train'].get_i2w(), pad_idx=datasets['train'].pad_idx)
                     tracker['z'] = torch.cat((tracker['z'], z.data), dim=0)
-                    logv = model.decoder(z)
                     logv = torch.argmax(logv, dim=2)
                     if 'gen_sents' not in tracker:
                         tracker['gen_sents'] = list()
