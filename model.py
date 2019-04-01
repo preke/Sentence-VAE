@@ -170,8 +170,8 @@ class SentenceVAE(nn.Module):
             # print(running_seqs)
             if len(running_seqs) > 0:
                 # print('fff')
-                print(running_seqs)
-                print(input_sequence)
+                # print(running_seqs)
+                # print(input_sequence)
                 input_sequence = input_sequence[running_seqs]
                 hidden = hidden[:, running_seqs]
 
