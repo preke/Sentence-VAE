@@ -59,7 +59,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
     parser.add_argument('-c', '--load_checkpoint', type=str)
-    parser.add_argument('-n', '--num_samples', type=int, default=5)
+    parser.add_argument('-n', '--num_samples', type=int, default=1)
 
     parser.add_argument('-dd', '--data_dir', type=str, default='data')
     parser.add_argument('-ms', '--max_sequence_length', type=int, default=50)
