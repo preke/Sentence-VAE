@@ -156,7 +156,7 @@ def main(args):
                     logp = torch.argmax(logp, dim=2)
                     if 'gen_sents' not in tracker:
                         tracker['gen_sents'] = list()
-                    tracker['gen_sents'] += idx2word(logv.data, i2w=datasets['train'].get_i2w(), pad_idx=datasets['train'].pad_idx)
+                    tracker['gen_sents'] += idx2word(logp.data, i2w=datasets['train'].get_i2w(), pad_idx=datasets['train'].pad_idx)
 
             print("%s Epoch %02d/%i, Mean ELBO %9.4f"%(split.upper(), epoch, args.epochs, torch.mean(tracker['ELBO'])))
 
