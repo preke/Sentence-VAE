@@ -167,7 +167,7 @@ class SentenceVAE(nn.Module):
             running_seqs = running_seqs.masked_select(running_mask)
 
             # prune input and hidden state according to local update
-            print(running_seqs)
+            # print(running_seqs)
             if len(running_seqs) > 0:
                 input_sequence = input_sequence[running_seqs]
                 hidden = hidden[:, running_seqs]
