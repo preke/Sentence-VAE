@@ -167,10 +167,10 @@ class SentenceVAE(nn.Module):
             # prune input and hidden state according to local update
             # print(running_seqs)
             if len(running_seqs) > 0:
-                print('fff')
-                print(running_seqs)
-                print('\n')
-                print(input_sequence)
+                # print('fff')
+                # print(running_seqs)
+                # print('\n')
+                # print(input_sequence)
                 input_sequence = input_sequence[running_seqs]
                 hidden = hidden[:, running_seqs]
 
