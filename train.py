@@ -135,6 +135,8 @@ def main(args):
                 # bookkeepeing
                 print('ELBO:\n')
                 print(tracker['ELBO'])
+                print('----')
+                print(loss.data)
                 tracker['ELBO'] = torch.cat((tracker['ELBO'], loss.data))
 
                 if args.tensorboard_logging:
