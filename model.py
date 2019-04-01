@@ -49,7 +49,7 @@ class SentenceVAE(nn.Module):
 
     
 
-    def encoder(self, input_sequence, sorted_lengths):
+    def encoder(self, input_sequence, sorted_lengths, batch_size):
         input_embedding = self.embedding(input_sequence)
 
         packed_input = rnn_utils.pack_padded_sequence(input_embedding, sorted_lengths.data.tolist(), batch_first=True)
@@ -72,7 +72,7 @@ class SentenceVAE(nn.Module):
 
         return mean, logv, z
 
-    def decoder(self, z):
+    def decoder(self, z, batch_size, sorted_idx):
         hidden = self.latent2hidden(z)
 
         if self.bidirectional or self.num_layers > 1:
