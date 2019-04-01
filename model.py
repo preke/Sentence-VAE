@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.utils.rnn as rnn_utils
-from utils import to_var
+from utils import to_var, idx2word, interpolate
 
 class SentenceVAE(nn.Module):
 
@@ -116,6 +116,8 @@ class SentenceVAE(nn.Module):
 
         return logp, mean, logv, z
 
+
+    
 
     def inference(self, n=4, z=None):
 

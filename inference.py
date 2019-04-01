@@ -7,6 +7,28 @@ from model import SentenceVAE
 from utils import to_var, idx2word, interpolate
 
 
+def decoder(model, z):
+    hidden = model.latent2hidden(z)
+    if model.bidirectional or model.num_layers > 1:
+        # unflatten hidden state
+        hidden = hidden.view(model.hidden_factor, batch_size, model.hidden_size)
+
+    hidden = hidden.unsqueeze(0)
+
+    t = 0
+    while(t<model.max_sequence_length):
+        if t == 0:
+            input_sequence = to_var(torch.Tensor(batch_size).fill_(model.sos_idx).long())
+        input_sequence  = input_sequence.unsqueeze(1)
+        input_embedding = model.embedding(input_sequence)
+        output, hidden  = model.decoder_rnn(input_embedding, hidden)
+        logits          = model.outputs2vocab(output)
+        input_sequence  = model._sample(logits)
+        print('---')
+        print(logits)   
+        t += 1
+
+
 def main(args):
 
     with open(args.data_dir+'/ptb.vocab.json', 'r') as file:
@@ -42,24 +64,29 @@ def main(args):
     
     model.eval()
 
+    
     samples, z = model.inference(n=args.num_samples)
     print('----------SAMPLES----------')
     print(*idx2word(samples, i2w=i2w, pad_idx=w2i['<pad>']), sep='\n')
+    decoder(model, z)
 
-    z1 = torch.randn([args.latent_size]).numpy()
-    z2 = torch.randn([args.latent_size]).numpy()
-    z = to_var(torch.from_numpy(interpolate(start=z1, end=z2, steps=8)).float())
-    samples, _ = model.inference(z=z)
-    print(samples.size())
-    print('-------INTERPOLATION-------')
-    print(*idx2word(samples, i2w=i2w, pad_idx=w2i['<pad>']), sep='\n')
+
+    
+
+    # z1 = torch.randn([args.latent_size]).numpy()
+    # z2 = torch.randn([args.latent_size]).numpy()
+    # z = to_var(torch.from_numpy(interpolate(start=z1, end=z2, steps=8)).float())
+    # samples, _ = model.inference(z=z)
+    # print(samples.size())
+    # print('-------INTERPOLATION-------')
+    # print(*idx2word(samples, i2w=i2w, pad_idx=w2i['<pad>']), sep='\n')
 
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
 
     parser.add_argument('-c', '--load_checkpoint', type=str)
-    parser.add_argument('-n', '--num_samples', type=int, default=2)
+    parser.add_argument('-n', '--num_samples', type=int, default=10)
 
     parser.add_argument('-dd', '--data_dir', type=str, default='data')
     parser.add_argument('-ms', '--max_sequence_length', type=int, default=50)
