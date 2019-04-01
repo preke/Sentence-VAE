@@ -136,8 +136,8 @@ def main(args):
                 print('ELBO:\n')
                 print(tracker['ELBO'])
                 print('----')
-                print(loss.data)
-                tracker['ELBO'] = torch.cat((tracker['ELBO'], loss.data))
+                print(loss.data.unsqeeze())
+                tracker['ELBO'] = torch.cat((tracker['ELBO'], loss.data.unsqeeze()))
 
                 if args.tensorboard_logging:
                     writer.add_scalar("%s/ELBO"%split.upper(), loss.data[0], epoch*len(data_loader) + iteration)
