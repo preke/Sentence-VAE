@@ -1,7 +1,7 @@
 import json
 
 
-with open('dumps/2019-Apr-01-16:33:42/valid_E50.json', 'r') as file:
+with open('dumps/2019-Apr-02-02:40:54/valid_E9.json', 'r') as file:
     sentences = json.load(file)
 
 target = sentences['target_sents'][:20]
