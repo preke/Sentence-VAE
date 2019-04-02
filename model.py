@@ -82,7 +82,8 @@ class SentenceVAE(nn.Module):
             hidden = hidden.unsqueeze(0)
 
         # decoder input
-        if self.word_dropout_rate > -1:
+        if self.word_dropout_rate > 0:
+            print(self.word_dropout_rate)
             # randomly replace decoder input with <unk>
             prob = torch.rand(input_sequence.size())
             if torch.cuda.is_available():

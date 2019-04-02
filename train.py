@@ -103,11 +103,11 @@ def main(args):
 
             # Enable/Disable Dropout
             if split == 'train':
-                model.word_dropout = 0
+                # model.word_dropout = 0
                 model.train()
 
             else:
-                model.word_dropout = 1.0
+                # model.word_dropout = 1.0
                 model.eval()
 
             for iteration, batch in enumerate(data_loader):
@@ -188,7 +188,7 @@ if __name__ == '__main__':
     parser.add_argument('--min_occ', type=int, default=1)
     parser.add_argument('--test', action='store_true')
 
-    parser.add_argument('-ep', '--epochs', type=int, default=100)
+    parser.add_argument('-ep', '--epochs', type=int, default=10)
     parser.add_argument('-bs', '--batch_size', type=int, default=32)
     parser.add_argument('-lr', '--learning_rate', type=float, default=0.001)
 
